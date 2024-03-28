@@ -204,6 +204,7 @@ class MaterialTextField : UITextField {
     func labelFloatingModeChanged() {
         var animated = true
         if !self.isHidden && !(self.window?.isKeyWindow ?? false) {
+            // if view is not loaded
             animated = false
         }
         
