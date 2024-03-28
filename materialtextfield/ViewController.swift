@@ -159,63 +159,78 @@ class MaterialTextField : UITextField {
     }
     
     // MARK: - label animations
-    func floatLabel() {
+    func floatLabel(animated: Bool) {
         self.isLabelFloating = true
         let oldConstraint = self.centerYLabelAnchor
         self.centerYLabelAnchor = self.label.centerYAnchor.constraint(equalTo: self.topAnchor, constant: 0)
-        self.label.animate(font: .systemFont(ofSize: 12), duration: 0.2)
-        
-        UIView.animate(withDuration: 0.2) {
-            oldConstraint?.constant = -self.frame.height / 2
-            self.layoutIfNeeded()
-        } completion: { isFinished in
-            guard isFinished else { return }
+        if animated {
+            self.label.animate(font: .systemFont(ofSize: 12), duration: 0.2)
+            UIView.animate(withDuration: 0.2) {
+                oldConstraint?.constant = -self.frame.height / 2
+                self.layoutIfNeeded()
+            } completion: { isFinished in
+                guard isFinished else { return }
+                oldConstraint?.isActive = false
+                self.centerYLabelAnchor.isActive = true
+            }
+        } else {
+            self.label.font = .systemFont(ofSize: 12)
             oldConstraint?.isActive = false
             self.centerYLabelAnchor.isActive = true
         }
     }
 
-    func unfloatLabel() {
+    func unfloatLabel(animated: Bool) {
         self.isLabelFloating = false
         let oldConstraint = self.centerYLabelAnchor
         self.centerYLabelAnchor = self.label.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0)
-        self.label.animate(font: .systemFont(ofSize: 15), duration: 0.2)
-        
-        UIView.animate(withDuration: 0.2, delay: 0, options: [.curveEaseOut]) {
-            oldConstraint?.constant = self.frame.height / 2
-            self.layoutIfNeeded()
-        } completion: { isFinished in
-            guard isFinished else { return }
+        if animated {
+            self.label.animate(font: .systemFont(ofSize: 15), duration: 0.2)
+            UIView.animate(withDuration: 0.2, delay: 0, options: [.curveEaseOut]) {
+                oldConstraint?.constant = self.frame.height / 2
+                self.layoutIfNeeded()
+            } completion: { isFinished in
+                guard isFinished else { return }
+                oldConstraint?.isActive = false
+                self.centerYLabelAnchor.isActive = true
+            }
+        } else {
+            self.label.font = .systemFont(ofSize: 15)
             oldConstraint?.isActive = false
             self.centerYLabelAnchor.isActive = true
         }
     }
     
     func labelFloatingModeChanged() {
+        var animated = true
+        if !self.isHidden && !(self.window?.isKeyWindow ?? false) {
+            animated = false
+        }
+        
         self.label.isHidden = labelFloatingMode == .never
         
         if labelFloatingMode == .always {
-            if !self.isLabelFloating { floatLabel() }
+            if !self.isLabelFloating { floatLabel(animated: animated) }
         } else if labelFloatingMode == .automatic {
             if self.isEditing {
-                if !self.isLabelFloating && self.text == "" { floatLabel() }
+                if !self.isLabelFloating && self.text == "" { floatLabel(animated: animated) }
             } else {
-                if self.isLabelFloating { unfloatLabel() }
+                if self.isLabelFloating { unfloatLabel(animated: animated) }
             }
         } else {
-            unfloatLabel()
+            unfloatLabel(animated: animated)
         }
     }
     
     @objc func editingBegan() {
         if labelFloatingMode == .automatic, !self.isLabelFloating {
-            floatLabel()
+            floatLabel(animated: true)
         }
     }
     
     @objc func editingEnded() {
         if labelFloatingMode == .automatic, self.isLabelFloating, self.text == "" {
-            unfloatLabel()
+            unfloatLabel(animated: true)
         }
     }
     
