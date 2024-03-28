@@ -106,7 +106,7 @@ class MaterialTextField : UITextField {
     var label: UILabel!
     private var labelFrame: CGRect!
     
-    var labelFloatingMode = LabelFlotingMode.automatic {
+    var labelFloatingMode: LabelFlotingMode! {
         didSet { labelFloatingModeChanged() }
     }
     var padding: UIEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10) {
@@ -134,6 +134,7 @@ class MaterialTextField : UITextField {
         setUpOutlineSublayer()
         addTarget(self, action: #selector(editingBegan), for: .editingDidBegin)
         addTarget(self, action: #selector(editingEnded), for: .editingDidEnd)
+        labelFloatingMode = LabelFlotingMode.automatic
     }
     
     private func setupLabel() {
@@ -201,6 +202,8 @@ class MaterialTextField : UITextField {
             } else {
                 if self.isLabelFloating { unfloatLabel() }
             }
+        } else {
+            unfloatLabel()
         }
     }
     
