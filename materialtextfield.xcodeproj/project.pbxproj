@@ -12,7 +12,6 @@
 		0D8BD0C02B3AF10800E6F8FF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D8BD0BE2B3AF10800E6F8FF /* Main.storyboard */; };
 		0D8BD0C22B3AF10A00E6F8FF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D8BD0C12B3AF10A00E6F8FF /* Assets.xcassets */; };
 		0D8BD0C52B3AF10A00E6F8FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D8BD0C32B3AF10A00E6F8FF /* LaunchScreen.storyboard */; };
-		6BEF4DD98D5CD3C0F9D2A01B /* Pods_materialtextfield.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE33883C3132AFA1C5BEE34 /* Pods_materialtextfield.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,9 +22,6 @@
 		0D8BD0C12B3AF10A00E6F8FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0D8BD0C42B3AF10A00E6F8FF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0D8BD0C62B3AF10A00E6F8FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9227DE6641C3B7E3AA081EAF /* Pods-materialtextfield.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-materialtextfield.release.xcconfig"; path = "Target Support Files/Pods-materialtextfield/Pods-materialtextfield.release.xcconfig"; sourceTree = "<group>"; };
-		ABE33883C3132AFA1C5BEE34 /* Pods_materialtextfield.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_materialtextfield.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC74FB9937C1581471BC2126 /* Pods-materialtextfield.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-materialtextfield.debug.xcconfig"; path = "Target Support Files/Pods-materialtextfield/Pods-materialtextfield.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,7 +29,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6BEF4DD98D5CD3C0F9D2A01B /* Pods_materialtextfield.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,7 +40,6 @@
 			children = (
 				0D8BD0B72B3AF10800E6F8FF /* materialtextfield */,
 				0D8BD0B62B3AF10800E6F8FF /* Products */,
-				DBA92757BE3FB90C05ABD97B /* Pods */,
 				309219F2F67269D546090ACD /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -74,18 +68,8 @@
 		309219F2F67269D546090ACD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				ABE33883C3132AFA1C5BEE34 /* Pods_materialtextfield.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		DBA92757BE3FB90C05ABD97B /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				BC74FB9937C1581471BC2126 /* Pods-materialtextfield.debug.xcconfig */,
-				9227DE6641C3B7E3AA081EAF /* Pods-materialtextfield.release.xcconfig */,
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +79,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0D8BD0C92B3AF10A00E6F8FF /* Build configuration list for PBXNativeTarget "materialtextfield" */;
 			buildPhases = (
-				03355DFA458867492DFA50D6 /* [CP] Check Pods Manifest.lock */,
 				0D8BD0B12B3AF10800E6F8FF /* Sources */,
 				0D8BD0B22B3AF10800E6F8FF /* Frameworks */,
 				0D8BD0B32B3AF10800E6F8FF /* Resources */,
@@ -154,31 +137,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		03355DFA458867492DFA50D6 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-materialtextfield-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0D8BD0B12B3AF10800E6F8FF /* Sources */ = {
@@ -328,7 +286,6 @@
 		};
 		0D8BD0CA2B3AF10A00E6F8FF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BC74FB9937C1581471BC2126 /* Pods-materialtextfield.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -357,7 +314,6 @@
 		};
 		0D8BD0CB2B3AF10A00E6F8FF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9227DE6641C3B7E3AA081EAF /* Pods-materialtextfield.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
