@@ -27,8 +27,6 @@ class ViewController: UIViewController {
                 let view = MaterialTextField()
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.lineMode = .none
-                view.text = "Test"
-                // TODO: label not floating after text changing (labelFloatingMode is automatic)
                 return view
             }(),
             {
@@ -36,21 +34,18 @@ class ViewController: UIViewController {
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.labelFloatingMode = .always
                 view.lineMode = .underline
-                view.text = "Teest"
                 return view
             }(),
             {
                 let view = MaterialTextField()
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.cornerRadius = 20
-                view.text = "Teeest"
                 return view
             }(),
             {
                 let view = MaterialTextField()
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.labelFloatingMode = .never
-                view.text = "Teeeest"
                 return view
             }(),
         ])
@@ -129,6 +124,14 @@ class MaterialTextField : UITextField {
         didSet { setNeedsLayout() }
     }
     
+    override var text: String? {
+        didSet {
+            if labelFloatingMode == .automatic && (text?.isEmpty ?? true) == isLabelFloating {
+                labelFloatingModeChanged()
+            }
+        }
+    }
+    
     var outlinedSublayer: CAShapeLayer = CAShapeLayer()
     private var leadingLabelAnchor: NSLayoutConstraint!
     private var trailingLabelAnchor: NSLayoutConstraint!
@@ -150,7 +153,7 @@ class MaterialTextField : UITextField {
         setUpOutlineSublayer()
         addTarget(self, action: #selector(editingBegan), for: .editingDidBegin)
         addTarget(self, action: #selector(editingEnded), for: .editingDidEnd)
-        addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+//        addTarget(self, action: #selector(textFieldDidChange(_:)), for: .valueChanged)
         labelFloatingMode = LabelFlotingMode.automatic
     }
     
@@ -230,8 +233,8 @@ class MaterialTextField : UITextField {
         if labelFloatingMode == .always {
             if !self.isLabelFloating { floatLabel(animated: animated) }
         } else if labelFloatingMode == .automatic {
-            if self.isEditing {
-                if !self.isLabelFloating && self.text == "" { floatLabel(animated: animated) }
+            if self.isEditing || !(self.text?.isEmpty ?? true) {
+                floatLabel(animated: animated)
             } else {
                 if self.isLabelFloating { unfloatLabel(animated: animated) }
             }
@@ -252,14 +255,13 @@ class MaterialTextField : UITextField {
         }
     }
     
-    @objc func textFieldDidChange(_ textField: UITextField) {
-        print("asdasdasd")
-    }
+//    @objc func textFieldDidChange(_ textField: UITextField) {
+//        print("textFieldDidChange")
+//    }
     
     // MARK: - superclass functions
     override func layoutSubviews() {
         super.layoutSubviews()
-        print("text -", text ?? "nil")
         applyStyle()
     }
 
@@ -274,25 +276,6 @@ class MaterialTextField : UITextField {
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: padding)
     }
-    
-}
-
-
-extension MaterialTextField : UITextFieldDelegate {
-    
-//    override func shouldChangeText(in range: UITextRange, replacementText text: String) -> Bool {
-//        let res = super.shouldChangeText(in: range, replacementText: text)
-//        print(res)
-//        return res
-//    }
-//    override class func didChangeValue(forKey key: String) {
-//        super.didChangeValue(forKey: key)
-//        print(key)
-//    }
-    
-//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-//        return delegate?.textField(textField, shouldChangeCharactersIn: range, replacementString: string) ?? true
-//    }
     
 }
 
