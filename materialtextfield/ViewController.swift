@@ -29,11 +29,11 @@ class ViewController: UIViewController {
                 let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
                 x.backgroundColor = .red
                 view.leftView = x
-                view.leftViewMode = .always
+                view.leftViewMode = .unlessEditing
                 let y = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
                 y.backgroundColor = .red
                 view.rightView = y
-                view.rightViewMode = .always
+                view.rightViewMode = .unlessEditing
                 
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.lineMode = .none
@@ -341,10 +341,10 @@ class MaterialTextField : UITextField {
     
     private func getPaddingWithSideViews() -> UIEdgeInsets {
         var padding = padding
-        if let leftView = leftView, leftViewMode == .always || (leftViewMode == .whileEditing && isEditing) || (leftViewMode == .unlessEditing && !isEditing) {
+        if let leftView = leftView, leftViewMode == .always || (leftViewMode == .whileEditing && isEditing) || (leftViewMode == .unlessEditing && (!isEditing || text?.isEmpty ?? true)) {
             padding.left += leftView.frame.width + leftViewSpacing
         }
-        if let rightView = rightView, rightViewMode == .always || (rightViewMode == .whileEditing && isEditing) || (rightViewMode == .unlessEditing && !isEditing) {
+        if let rightView = rightView, rightViewMode == .always || (rightViewMode == .whileEditing && isEditing) || (rightViewMode == .unlessEditing && (!isEditing || text?.isEmpty ?? true)) {
             padding.right += rightView.frame.width + rightViewSpacing
         }
         return padding
