@@ -25,12 +25,32 @@ class ViewController: UIViewController {
         let stack = UIStackView(arrangedSubviews: [
             {
                 let view = MaterialTextField()
+                
+                let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+                x.backgroundColor = .red
+                view.leftView = x
+                view.leftViewMode = .always
+                let y = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+                y.backgroundColor = .red
+                view.rightView = y
+                view.rightViewMode = .always
+                
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.lineMode = .none
                 return view
             }(),
             {
                 let view = MaterialTextField()
+                
+                let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+                x.backgroundColor = .red
+                view.leftView = x
+                view.leftViewMode = .always
+                let y = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+                y.backgroundColor = .red
+                view.rightView = y
+                view.rightViewMode = .always
+                
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.labelFloatingMode = .always
                 view.lineMode = .underline
@@ -38,12 +58,33 @@ class ViewController: UIViewController {
             }(),
             {
                 let view = MaterialTextField()
-                view.heightAnchor.constraint(equalToConstant: 40).isActive = true
+                view.padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
                 view.cornerRadius = 20
+                view.heightAnchor.constraint(equalToConstant: 40).isActive = true
+                
+                let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+                x.backgroundColor = .red
+                view.leftView = x
+                view.leftViewMode = .always
+                let y = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+                y.backgroundColor = .red
+                view.rightView = y
+                view.rightViewMode = .always
+                
                 return view
             }(),
             {
                 let view = MaterialTextField()
+                
+                let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+                x.backgroundColor = .red
+                view.leftView = x
+                view.leftViewMode = .always
+                let y = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+                y.backgroundColor = .red
+                view.rightView = y
+                view.rightViewMode = .always
+                
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.labelFloatingMode = .never
                 return view
@@ -121,6 +162,12 @@ class MaterialTextField : UITextField {
         didSet { setNeedsLayout() }
     }
     var padding: UIEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10) {
+        didSet { setNeedsLayout() }
+    }
+    var leftViewSpacing: CGFloat = 10 {
+        didSet { setNeedsLayout() }
+    }
+    var rightViewSpacing: CGFloat = 10 {
         didSet { setNeedsLayout() }
     }
     
@@ -266,15 +313,41 @@ class MaterialTextField : UITextField {
     }
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {
+        let padding = getPaddingWithSideViews()
         return bounds.inset(by: padding)
     }
 
     override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        let padding = getPaddingWithSideViews()
         return bounds.inset(by: padding)
     }
 
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        let padding = getPaddingWithSideViews()
         return bounds.inset(by: padding)
+    }
+    
+    override func leftViewRect(forBounds bounds: CGRect) -> CGRect {
+        var rect = super.leftViewRect(forBounds: bounds)
+        rect.origin.x = padding.left
+        return rect
+    }
+    
+    override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
+        var rect = super.rightViewRect(forBounds: bounds.inset(by: padding))
+//        rect.origin.x = padding.left
+        return rect
+    }
+    
+    private func getPaddingWithSideViews() -> UIEdgeInsets {
+        var padding = padding
+        if let leftView = leftView, leftViewMode == .always || (leftViewMode == .whileEditing && isEditing) || (leftViewMode == .unlessEditing && !isEditing) {
+            padding.left += leftView.frame.width + leftViewSpacing
+        }
+        if let rightView = rightView, rightViewMode == .always || (rightViewMode == .whileEditing && isEditing) || (rightViewMode == .unlessEditing && !isEditing) {
+            padding.right += rightView.frame.width + rightViewSpacing
+        }
+        return padding
     }
     
 }
@@ -287,6 +360,7 @@ extension MaterialTextField {
         let labelFrame: CGRect = label.frame
         let outlineLineWidth: CGFloat = isEditing ? 2 : 1
         
+        var padding = getPaddingWithSideViews()
         leadingLabelAnchor.constant = isLabelFloating ? cornerRadius + labelSidePadding : padding.left
         trailingLabelAnchor.constant = isLabelFloating ? -(cornerRadius + labelSidePadding) : -padding.right
         
