@@ -51,6 +51,7 @@ class ViewController: UIViewController {
                 view.rightView = y
                 view.rightViewMode = .always
                 
+                view.setBorder(width: 10, for: .active)
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.labelFloatingMode = .always
                 view.lineMode = .underline
@@ -61,6 +62,8 @@ class ViewController: UIViewController {
                 view.padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
                 view.cornerRadius = 20
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
+                view.setBorder(color: .blue, for: .active)
+//                view.setBorder(color: .yellow, for: .filled)
                 
                 let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
                 x.backgroundColor = .red
@@ -103,21 +106,6 @@ class ViewController: UIViewController {
         ])
         
         
-        
-        
-        
-//        let matTF = MaterialTextField(frame: .zero)
-//        view.addSubview(matTF)
-//        matTF.translatesAutoresizingMaskIntoConstraints = false
-//
-//        NSLayoutConstraint.activate([
-//          matTF.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-//          matTF.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-//          matTF.heightAnchor.constraint(equalToConstant: 50),
-//          matTF.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-//        ])
-        
-        
         view.viewWithTag(6969)?.isHidden = true
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(fuck)))
     }
@@ -143,6 +131,13 @@ extension MaterialTextField {
         case outline
     }
     
+    enum State {
+        case normal
+        case active
+//        case filled
+//        case activeAndFilled
+    }
+    
 }
 
 
@@ -154,6 +149,10 @@ class MaterialTextField : UITextField {
     
     var label: UILabel!
     private var labelFrame: CGRect!
+    
+    private(set) var currentState: State = .normal
+    private var borderColors: [State: UIColor] = [.normal: .black]
+    private var borderWidths: [State: CGFloat] = [.normal: 1, .active: 2]
     
     var labelFloatingMode: LabelFlotingMode! {
         didSet { labelFloatingModeChanged() }
@@ -309,6 +308,12 @@ class MaterialTextField : UITextField {
     // MARK: - superclass functions
     override func layoutSubviews() {
         super.layoutSubviews()
+        currentState = isEditing ? .active : .normal
+//        if isEditing {
+//            currentState = (text?.isEmpty ?? true) ? .active : .activeAndFilled
+//        } else {
+//            currentState = (text?.isEmpty ?? true) ? .normal : .filled
+//        }
         applyStyle()
     }
 
@@ -334,7 +339,7 @@ class MaterialTextField : UITextField {
     }
     
     override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
-        var rect = super.rightViewRect(forBounds: bounds.inset(by: padding))
+        let rect = super.rightViewRect(forBounds: bounds.inset(by: padding))
 //        rect.origin.x = padding.left
         return rect
     }
@@ -350,6 +355,17 @@ class MaterialTextField : UITextField {
         return padding
     }
     
+    // MARK: - style and properties
+    func setBorder(color: UIColor, for state: State) {
+        borderColors[state] = color
+        setNeedsLayout()
+    }
+    
+    func setBorder(width: CGFloat, for state: State) {
+        borderWidths[state] = width
+        setNeedsLayout()
+    }
+    
 }
 
 
@@ -358,16 +374,14 @@ extension MaterialTextField {
     
     func applyStyle() {
         let labelFrame: CGRect = label.frame
-        let outlineLineWidth: CGFloat = isEditing ? 2 : 1
         
-        var padding = getPaddingWithSideViews()
+        let padding = getPaddingWithSideViews()
         leadingLabelAnchor.constant = isLabelFloating ? cornerRadius + labelSidePadding : padding.left
         trailingLabelAnchor.constant = isLabelFloating ? -(cornerRadius + labelSidePadding) : -padding.right
         
         let path = outlinePath(
             with: frame,
             labelFrame: labelFrame,
-            outlineWidth: outlineLineWidth,
             cornerRadius: cornerRadius,
             isLabelFloating: isLabelFloating
         )
@@ -375,6 +389,8 @@ extension MaterialTextField {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         self.outlinedSublayer.path = path.cgPath;
+        
+        let outlineLineWidth = borderWidths[currentState] ?? borderWidths[.normal]!
         self.outlinedSublayer.lineWidth = outlineLineWidth;
         CATransaction.commit()
         
@@ -382,14 +398,11 @@ extension MaterialTextField {
             self.layer.insertSublayer(self.outlinedSublayer, at: 0)
         }
         
-        var color = UIColor.black
-        if #available(iOS 13, *) {
-            color = .label
-        }
+        let color = borderColors[currentState] ?? borderColors[.normal]!
         self.outlinedSublayer.strokeColor = color.cgColor
     }
     
-    func outlinePath(with viewBounds: CGRect, labelFrame: CGRect, outlineWidth:CGFloat, cornerRadius radius:CGFloat, isLabelFloating:Bool) -> UIBezierPath {
+    func outlinePath(with viewBounds: CGRect, labelFrame: CGRect, cornerRadius radius:CGFloat, isLabelFloating:Bool) -> UIBezierPath {
         let path = UIBezierPath()
         if self.lineMode == .none {
             return path
@@ -498,3 +511,11 @@ extension UILabel {
     }
     
 }
+
+
+//extension Dictionary where Key == MaterialTextField.State {
+//    /// get value by state: if state doesn't exist it gets .normal, in case of .activeAndFilled its gets .active and if there is no even .active it gets .normal
+//    func get(by state: Key) -> Value {
+//        return self[state] ?? ((state == .activeAndFilled) ? (self[.active] ?? self[.normal]!) : self[.normal]!)
+//    }
+//}
