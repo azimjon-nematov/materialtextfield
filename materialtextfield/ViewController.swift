@@ -96,6 +96,27 @@ class ViewController: UIViewController {
                 view.labelFloatingMode = .never
                 return view
             }(),
+            {
+                let mat = MaterialTextField()
+                mat.placeholder = "1234567"
+                mat.labelFloatingMode = .automatic
+                mat.lineMode = .underline
+                mat.heightAnchor.constraint(equalToConstant: 48).isActive = true
+                mat.padding = UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 8)
+                mat.translatesAutoresizingMaskIntoConstraints = false
+                
+                let viewForAkmalhon = UIView()
+                viewForAkmalhon.heightAnchor.constraint(equalToConstant: 56).isActive = true
+                viewForAkmalhon.backgroundColor = .cyan
+                viewForAkmalhon.addSubview(mat)
+                NSLayoutConstraint.activate([
+                    mat.topAnchor.constraint(equalTo: viewForAkmalhon.topAnchor, constant: 8),
+                    mat.leadingAnchor.constraint(equalTo: viewForAkmalhon.leadingAnchor),
+                    mat.trailingAnchor.constraint(equalTo: viewForAkmalhon.trailingAnchor),
+                    mat.bottomAnchor.constraint(equalTo: viewForAkmalhon.bottomAnchor),
+                ])
+                return viewForAkmalhon
+            }(),
         ])
         stack.axis = .vertical
         stack.spacing = 25
@@ -165,7 +186,10 @@ class MaterialTextField : UITextField {
         didSet { setNeedsLayout() }
     }
     var padding: UIEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10) {
-        didSet { setNeedsLayout() }
+        didSet {
+            labelFloatingModeChanged()
+            setNeedsLayout()
+        }
     }
     var leftViewSpacing: CGFloat = 10 {
         didSet { setNeedsLayout() }
@@ -217,7 +241,8 @@ class MaterialTextField : UITextField {
         self.addSubview(label)
         leadingLabelAnchor = label.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0)
         trailingLabelAnchor = label.trailingAnchor.constraint(lessThanOrEqualTo: self.trailingAnchor, constant: 0)
-        centerYLabelAnchor = label.centerYAnchor.constraint(equalTo: self.topAnchor, constant: 0)
+        let offset = (self.padding.top - self.padding.bottom) / 2
+        centerYLabelAnchor = label.centerYAnchor.constraint(equalTo: self.topAnchor, constant: offset)
         
         NSLayoutConstraint.activate([leadingLabelAnchor, trailingLabelAnchor, centerYLabelAnchor])
     }
@@ -254,11 +279,12 @@ class MaterialTextField : UITextField {
     func unfloatLabel(animated: Bool) {
         self.isLabelFloating = false
         let oldConstraint = self.centerYLabelAnchor
-        self.centerYLabelAnchor = self.label.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0)
+        let offset = (self.padding.top - self.padding.bottom) / 2
+        self.centerYLabelAnchor = self.label.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: offset)
         if animated {
             self.label.animate(font: .systemFont(ofSize: 15), duration: 0.2)
             UIView.animate(withDuration: 0.2, delay: 0, options: [.curveEaseOut]) {
-                oldConstraint?.constant = self.frame.height / 2
+                oldConstraint?.constant = self.frame.height / 2 + offset
                 self.layoutIfNeeded()
             } completion: { isFinished in
                 guard isFinished else { return }
@@ -288,7 +314,12 @@ class MaterialTextField : UITextField {
             if self.isEditing || !(self.text?.isEmpty ?? true) {
                 floatLabel(animated: animated)
             } else {
-                if self.isLabelFloating { unfloatLabel(animated: animated) }
+                if self.isLabelFloating {
+                    unfloatLabel(animated: animated)
+                } else {
+                    let offset = (padding.top - padding.bottom) / 2
+                    centerYLabelAnchor.constant = offset
+                }
             }
         } else {
             unfloatLabel(animated: animated)
