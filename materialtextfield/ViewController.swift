@@ -25,6 +25,7 @@ class ViewController: UIViewController {
         let stack = UIStackView(arrangedSubviews: [
             {
                 let view = MaterialTextField()
+                view.placeholder = "1234567"
                 
                 let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
                 x.backgroundColor = .red
@@ -41,6 +42,7 @@ class ViewController: UIViewController {
             }(),
             {
                 let view = MaterialTextField()
+                view.placeholder = "1234567"
                 
                 let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
                 x.backgroundColor = .red
@@ -63,6 +65,7 @@ class ViewController: UIViewController {
                 view.cornerRadius = 20
                 view.heightAnchor.constraint(equalToConstant: 40).isActive = true
                 view.setBorder(color: .blue, for: .active)
+                view.placeholder = "1234567"
 //                view.setBorder(color: .yellow, for: .filled)
                 
                 let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
@@ -78,6 +81,7 @@ class ViewController: UIViewController {
             }(),
             {
                 let view = MaterialTextField()
+                view.placeholder = "1234567"
                 
                 let x = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
                 x.backgroundColor = .red
@@ -244,6 +248,7 @@ class MaterialTextField : UITextField {
             oldConstraint?.isActive = false
             self.centerYLabelAnchor.isActive = true
         }
+        placeholder = _placeholder
     }
 
     func unfloatLabel(animated: Bool) {
@@ -265,6 +270,7 @@ class MaterialTextField : UITextField {
             oldConstraint?.isActive = false
             self.centerYLabelAnchor.isActive = true
         }
+        placeholder = _placeholder
     }
     
     func labelFloatingModeChanged() {
@@ -309,12 +315,18 @@ class MaterialTextField : UITextField {
     override func layoutSubviews() {
         super.layoutSubviews()
         currentState = isEditing ? .active : .normal
-//        if isEditing {
-//            currentState = (text?.isEmpty ?? true) ? .active : .activeAndFilled
-//        } else {
-//            currentState = (text?.isEmpty ?? true) ? .normal : .filled
-//        }
         applyStyle()
+    }
+    
+    private var _placeholder: String?
+    override var placeholder: String? {
+        set {
+            _placeholder = newValue
+            super.placeholder = isLabelFloating || labelFloatingMode == .never ? _placeholder : nil
+        }
+        get {
+            return _placeholder
+        }
     }
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {
