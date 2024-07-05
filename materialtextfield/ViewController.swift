@@ -102,7 +102,7 @@ class ViewController: UIViewController {
                 mat.labelFloatingMode = .automatic
                 mat.lineMode = .underline
                 mat.heightAnchor.constraint(equalToConstant: 48).isActive = true
-                mat.padding = UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 8)
+                mat.padding = UIEdgeInsets(top: 0, left: 10, bottom: 8, right: 10)
                 mat.translatesAutoresizingMaskIntoConstraints = false
                 
                 let viewForAkmalhon = UIView()
